@@ -21,6 +21,7 @@ public class Lab3 {
 		// some objects that need to be instantiated
 		Odometer odometer = new Odometer();
 		OdometryDisplay odometryDisplay = new OdometryDisplay(odometer);
+		Navigation navigation = new Navigation(odometer);
 		
 		do {
 			// clear the display
@@ -52,13 +53,8 @@ public class Lab3 {
 			odometer.start();
 			odometryDisplay.start();
 			//odometryCorrection.start();
+			navigation.start();
 
-			// spawn a new Thread to avoid SquareDriver.drive() from blocking
-			(new Thread() {
-				public void run() {
-					SquareDriver.drive(Motor.A, Motor.B, 2.1, 2.1, 15.2);
-				}
-			}).start();
 		}
 		
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
@@ -66,5 +62,6 @@ public class Lab3 {
 		
 		
 	}
+	
 
 }

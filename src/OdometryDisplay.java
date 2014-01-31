@@ -26,8 +26,8 @@ public class OdometryDisplay extends Thread {
 			// clear the lines for displaying odometry information
 			LCD.drawString("X:              ", 0, 0);
 			LCD.drawString("Y:              ", 0, 1);
-			LCD.drawString("T:              ", 0, 2);	
-			LCD.drawString("D:              ", 0, 4);
+			LCD.drawString("Obstacle:              ", 0, 2);	
+			LCD.drawString("Traveling Angle:              ", 0, 4);
 			// get the odometry information
 			odometer.getPosition(position, new boolean[] { true, true, true });
 
