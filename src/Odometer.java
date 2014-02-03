@@ -113,6 +113,7 @@ public class Odometer extends Thread {
 
 		return result;
 	}
+	
 
 	// mutators
 	public void setPosition(double[] position, boolean[] update) {

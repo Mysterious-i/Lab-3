@@ -21,7 +21,7 @@ public class Lab3 {
 		// some objects that need to be instantiated
 		Odometer odometer = new Odometer();
 		OdometryDisplay odometryDisplay = new OdometryDisplay(odometer);
-		Navigation navigation = new Navigation(odometer);
+		
 		
 		do {
 			// clear the display
@@ -30,30 +30,30 @@ public class Lab3 {
 			// ask the user whether the motors should drive in a square or float
 			LCD.drawString("< Left | Right >", 0, 0);
 			LCD.drawString("       |        ", 0, 1);
-			LCD.drawString(" Float | Drive  ", 0, 2);
-		
+			LCD.drawString(" Path  | Path  	", 0, 2);
+			LCD.drawString(" One   | Two    ", 0, 3);
  
 			buttonChoice = Button.waitForAnyPress();
 		} while (buttonChoice != Button.ID_LEFT
 				&& buttonChoice != Button.ID_RIGHT);
 		
 
-		if (buttonChoice == Button.ID_LEFT) {
-			for (NXTRegulatedMotor motor : new NXTRegulatedMotor[] { Motor.A, Motor.B, Motor.C }) {
-				motor.forward();
-				motor.flt();
-			}
-
+		if (buttonChoice == Button.ID_LEFT) 
+		{	
+			
 			// start only the odometer and the odometry display
 			odometer.start();
 			odometryDisplay.start();
+			Navigation navigation = new Navigation(odometer);
+			navigation.start();
+			
 		} else {
 			// start the odometer, the odometry display and (possibly) the
 			// odometry correction
 			odometer.start();
 			odometryDisplay.start();
 			//odometryCorrection.start();
-			navigation.start();
+			
 
 		}
 		
