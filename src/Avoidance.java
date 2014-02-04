@@ -42,7 +42,7 @@ public class Avoidance extends Thread{
 	//Variables for the PController
 	private int filterControl;
 	private final int FILTER_ERROR = 18; //ultrasonic error readings to be filtered 
-	private final int correction = 10; //speed correction
+	private int correction = 0; //speed correction
 	private int error=0;
 	
 	//Odometer and Ultrasonic Sensor.
@@ -252,7 +252,7 @@ public class Avoidance extends Thread{
 		 * - or if the error is -ive ( too close to the wall),
 		 * - or if the error is +ive ( too far from the wall ).
 		 */
-		
+		calcProp();
 		
 		error = this.BC - this.sReading;
 		if(Math.abs(error) <= BW){
@@ -261,13 +261,13 @@ public class Avoidance extends Thread{
 			
 		}
 		else if (error < 0){ // turn left
-			rMotor.setSpeed(C_SPEED + outerWheelCor(error));
-			lMotor.setSpeed(C_SPEED);
+			rMotor.setSpeed(C_SPEED + correction);
+			lMotor.setSpeed(C_SPEED - correction);
 		}
 		
 		else if(error > 0){ //turn right
-			lMotor.setSpeed(C_SPEED + outerWheelCor(error));
-			rMotor.setSpeed(C_SPEED - innerWheelCor(error)); 
+			lMotor.setSpeed(C_SPEED + correction);
+			rMotor.setSpeed(C_SPEED - correction); 
 			
 		}
 	}
@@ -288,29 +288,19 @@ public class Avoidance extends Thread{
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 	
-	//corrects the speed of the outer wheel when turning around the obstacle
-		public int outerWheelCor (int error){
-			int toBeCorrected = Math.abs(error);
-			
-			if (toBeCorrected >= 15) 
-				toBeCorrected = 15; 
-			
-			toBeCorrected *= correction;
-			
-			return toBeCorrected;
+	/*
+	 *	This method calculates the the correction( int ) which is then
+	 * 	 used to increase or decrease the speed of the motors
+	 */
+	public void calcProp(){
+		int absError=Math.abs(error);
+		correction= 4 * absError;
+		
+		if(absError > 25){
+			correction = 100; 
 		}
-		//corrects the speed of the inner wheel when turning around the obstacle
-		public int innerWheelCor (int error){ 
-			int toBeCorrected = Math.abs(error);
-			if (toBeCorrected >= 6) 
-				toBeCorrected = 6;
-			
-			toBeCorrected *= correction;
-			
-			if (toBeCorrected >= C_SPEED) 
-				toBeCorrected = C_SPEED - 5; 
-			
-			return toBeCorrected; 
-		}
+				
+	}
+
 	
 }
