@@ -2,12 +2,25 @@ import lejos.nxt.Motor;
 
 /*
  * Odometer.java
+ *  
+ */
+
+/**
+ * @author Shahrzad Tighnavardmollasaraei 260413622
+ * @author Alessandro Parisi 260413622	
+ * Team 33
  */
 
 public class Odometer extends Thread {
 	// robot position
 	private double x, y, theta;
 
+	/**
+	 * Class Constants
+	 */
+		private static final double WHEEL_BASE = 15.45; //Base of the wheels
+		private static final double WHEEL_RAD = 2.1; //Radius of the wheels
+	
 	// odometer update period, in ms
 	private static final long ODOMETER_PERIOD = 25;
 
@@ -22,41 +35,65 @@ public class Odometer extends Thread {
 		lock = new Object();
 	}
 
+	/**
+	 * Class Variables
+	 */
+	private static int lastTachoL = 0 ; /* Tacho L at last sample */
+	private static int lastTachoR = 0; /* Tacho R at last sample */
+
+	private static int presTachoL; /* present tacho L*/
+	private static int presTachoR; /* present tacho R */
+	
+	
+	private static double deltaTR; 
+	private static double deltaTL;
+	
+	private double avgD;
+	private double deltaDL;
+	private double deltaDR;
+	private double deltaT;
+	
+	
 	// run method (required for Thread)
 	public void run() {
 		long updateStart, updateEnd;
-	    int lastTachoL = 0;          /* Tacho L at last sample */
-	    int lastTachoR = 0;          /* Tacho R at last sample */
-	    int nowTachoL;           /* Current tacho L */
-	    int nowTachoR;           /* Current tacho R */
-	    double WR=2.1;           /* Wheel radius */
-	    double WB=15.5;          /* Wheelbase */
-		double distL, distR, deltaD, deltaT, dX, dY;
-		while (true) {
+	
+	    double dX, dY;
+		
+	    while (true) {
 			updateStart = System.currentTimeMillis();
 
-			// put (some of) your odometer code here
+			
 
-			nowTachoL = Motor.A.getTachoCount();      
-			nowTachoR = Motor.B.getTachoCount();
-			distL = 3.14159*WR*(nowTachoL-lastTachoL)/180;
-			distR = 3.14159*WR*(nowTachoR-lastTachoR)/180;
-			lastTachoL=nowTachoL;
-			lastTachoR=nowTachoR;
-			deltaD = 0.5*(distL+distR);
-			deltaT = (distL-distR)/WB;   
+			presTachoL = Motor.A.getTachoCount();      
+			presTachoR = Motor.B.getTachoCount();
+			
+			deltaTL = presTachoL-lastTachoL;
+			deltaTR = presTachoR-lastTachoR;
+			
+			deltaDL = 3.14159*WHEEL_RAD*(deltaTL)/180;
+			deltaDR = 3.14159*WHEEL_RAD*(deltaTR)/180;
+			
+			
+			
+			avgD = 0.5*(deltaDL+deltaDR);
+			
+			deltaT = (deltaDL-deltaDR)/WHEEL_BASE;   
 			
 			synchronized (lock) {
 			
              /* delta X, Y, Theta */
 				theta += deltaT;
-			    dX = deltaD * Math.sin(theta);
-				dY = deltaD * Math.cos(theta);
+			    dX = avgD * Math.sin(theta);
+				dY = avgD * Math.cos(theta);
 				x = x + dX;                                      
 				y = y + dY;
 				
 			}
-
+			
+			
+			lastTachoL=presTachoL;
+			lastTachoR=presTachoR;
 			// this ensures that the odometer only runs once every period
 			updateEnd = System.currentTimeMillis();
 			if (updateEnd - updateStart < ODOMETER_PERIOD) {

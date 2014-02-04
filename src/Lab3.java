@@ -6,7 +6,8 @@ import lejos.nxt.*;
 
 /**
  * @author Shahrzad Tighnavardmollasaraei 260413622
- *
+ * @author Alessandro Parisi 260413622	
+ * Team 33
  */
 public class Lab3 {
 

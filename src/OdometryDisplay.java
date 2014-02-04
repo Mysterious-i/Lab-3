@@ -1,8 +1,18 @@
 /*
  * OdometryDisplay.java
  */
-import lejos.nxt.LCD;
 
+/**
+ * @author Shahrzad Tighnavardmollasaraei 260413622
+ * @author Alessandro Parisi 260413622	
+ * Team 33
+ */
+import lejos.nxt.LCD;
+/**
+ * @author Shahrzad Tighnavardmollasaraei 260413622
+ * @author Alessandro Parisi 260413622	
+ * Team 33
+ */
 public class OdometryDisplay extends Thread {
 	private static final long DISPLAY_PERIOD = 250;
 	private Odometer odometer;
@@ -26,8 +36,8 @@ public class OdometryDisplay extends Thread {
 			// clear the lines for displaying odometry information
 			LCD.drawString("X:              ", 0, 0);
 			LCD.drawString("Y:              ", 0, 1);
-			LCD.drawString("Angle:       ", 0, 2);	
-		//	LCD.drawString("Traveling Angle:", 0, 4);
+			LCD.drawString("Theta:          ", 0, 2);	
+		
 			// get the odometry information
 			odometer.getPosition(position, new boolean[] { true, true, true });
 
